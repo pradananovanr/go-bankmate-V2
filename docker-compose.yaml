@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  postgresql:
+    container_name: postgresql
+    environment:
+      - POSTGRES_PASSWORD=pradana
+    ports:
+      - "5555:5432"
+    networks:
+      - my_network
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+    image: postgres
+
+  go-bankmate:
+    container_name: go-bankmate
+    environment:
+    - DB_HOST=postgresql
+    - DB_PORT=5432
+    - DB_USER=postgres
+    - DB_PASSWORD=pradana
+    - DB_NAME=go-bankmate-docker
+    - SSL_MODE=disable
+    - SERVER_PORT=8085
+    - API_SECRET=pradanarianto
+    - TOKEN_HOUR_LIFESPAN=600
+    ports:
+      - "8085:8085"
+    build: .
+    networks:
+      - my_network
+
+volumes:
+  postgres_data:
+networks:
+  my_network:
+    driver: bridge
